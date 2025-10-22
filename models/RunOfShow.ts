@@ -146,7 +146,7 @@ const RunOfShowSchema = new Schema<IRunOfShow>(
 );
 
 // Create indexes for faster queries
-RunOfShowSchema.index({ eventId: 1 });
+// Note: eventId already has a unique index from the schema definition
 RunOfShowSchema.index({ 'timeSlots.djAssignments.djId': 1 });
 RunOfShowSchema.index({ 'timeSlots.djAssignments.status': 1 });
 

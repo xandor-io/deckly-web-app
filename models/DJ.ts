@@ -91,8 +91,7 @@ const DJSchema = new Schema<IDJ>(
 );
 
 // Create index for faster queries
+// Note: email and auth0Id already have unique indexes from the schema definition
 DJSchema.index({ genres: 1, bookingCount: 1 });
-DJSchema.index({ email: 1 });
-DJSchema.index({ auth0Id: 1 });
 
 export default mongoose.models.DJ || mongoose.model<IDJ>('DJ', DJSchema);
