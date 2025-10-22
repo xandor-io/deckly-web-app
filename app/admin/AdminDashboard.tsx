@@ -56,7 +56,7 @@ export default function AdminDashboard({ events }: AdminDashboardProps) {
     };
   });
 
-  const handleSelectEvent = (calEvent: any) => {
+  const handleSelectEvent = (calEvent: { id: string }) => {
     const event = events.find((e) => e._id === calEvent.id);
     if (event) {
       setSelectedEvent(event);

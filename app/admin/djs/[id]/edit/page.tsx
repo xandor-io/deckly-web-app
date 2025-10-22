@@ -41,8 +41,8 @@ export default function EditDJPage() {
           genres: data.dj.genres,
           isActive: data.dj.isActive,
         });
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {
         setLoading(false);
       }
@@ -78,8 +78,8 @@ export default function EditDJPage() {
       }
 
       router.push('/admin/djs');
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
       setSaving(false);
     }
   };

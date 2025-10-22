@@ -2,10 +2,28 @@ import { NextRequest, NextResponse } from 'next/server';
 import { isAdmin } from '@/lib/auth';
 import dbConnect from '@/lib/db';
 import Venue from '@/models/Venue';
+import { Types } from 'mongoose';
+
+interface VenueLean {
+  _id: Types.ObjectId;
+  name: string;
+  address: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  capacity?: number;
+  contactEmail: string;
+  contactPhone?: string;
+  isActive: boolean;
+  autoImportEnabled: boolean;
+  lastImportDate?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const admin = await isAdmin();
@@ -16,7 +34,8 @@ export async function GET(
 
     await dbConnect();
 
-    const venue = await Venue.findById(params.id).lean();
+    const { id } = await params;
+    const venue = await Venue.findById(id).lean<VenueLean>();
 
     if (!venue) {
       return NextResponse.json({ error: 'Venue not found' }, { status: 404 });
@@ -31,10 +50,10 @@ export async function GET(
     };
 
     return NextResponse.json({ success: true, venue: serializedVenue });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error fetching venue:', error);
     return NextResponse.json(
-      { error: error.message || 'Failed to fetch venue' },
+      { error: error instanceof Error ? error.message : 'Failed to fetch venue' },
       { status: 500 }
     );
   }
@@ -42,7 +61,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const admin = await isAdmin();
@@ -54,8 +73,9 @@ export async function PUT(
     await dbConnect();
 
     const data = await request.json();
+    const { id } = await params;
 
-    const venue = await Venue.findByIdAndUpdate(params.id, data, {
+    const venue = await Venue.findByIdAndUpdate(id, data, {
       new: true,
       runValidators: true,
     });
@@ -65,11 +85,11 @@ export async function PUT(
     }
 
     return NextResponse.json({ success: true, venue });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error updating venue:', error);
 
     return NextResponse.json(
-      { error: error.message || 'Failed to update venue' },
+      { error: error instanceof Error ? error.message : 'Failed to update venue' },
       { status: 500 }
     );
   }

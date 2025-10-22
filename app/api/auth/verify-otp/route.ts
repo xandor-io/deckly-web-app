@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyOTP } from '@/lib/auth/passwordless';
-import { auth0 } from '@/lib/auth0';
 import dbConnect from '@/lib/db';
 import User, { UserRole } from '@/models/User';
 
@@ -57,14 +56,10 @@ export async function POST(request: NextRequest) {
         role: user.role,
       },
     });
-  } catch (error: any) {
-    console.error('OTP verification error:', {
-      message: error.message,
-      response: error.response?.data,
-      stack: error.stack,
-    });
+  } catch (error) {
+    console.error('OTP verification error:', error);
     return NextResponse.json(
-      { error: error.message || 'Invalid or expired code' },
+      { error: error instanceof Error ? error.message : 'Invalid or expired code' },
       { status: 401 }
     );
   }

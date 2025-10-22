@@ -57,8 +57,8 @@ export const authOptions: NextAuthOptions = {
             role: user.role,
             djId: user.djId?.toString(),
           };
-        } catch (error: any) {
-          console.error('Authorization error:', error.message);
+        } catch (error) {
+          console.error('Authorization error:', error instanceof Error ? error.message : 'Unknown error');
           return null;
         }
       },

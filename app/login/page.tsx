@@ -48,7 +48,7 @@ export default function LoginPage() {
       }
 
       setShowOTP(true);
-    } catch (err) {
+    } catch {
       setError('Failed to send code. Please try again.');
     } finally {
       setLoading(false);
@@ -105,7 +105,7 @@ export default function LoginPage() {
       if (!response.ok) {
         throw new Error('Failed to resend OTP');
       }
-    } catch (err) {
+    } catch {
       setError('Failed to resend code.');
     } finally {
       setLoading(false);

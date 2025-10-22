@@ -6,6 +6,58 @@ import Event from '@/models/Event';
 import { format } from 'date-fns';
 import LogoutButton from '@/components/auth/LogoutButton';
 import DecklyLogo from '@/components/DecklyLogo';
+import { Types } from 'mongoose';
+
+interface DJAssignmentLean {
+  djId: Types.ObjectId;
+  status: string;
+  notificationSent: boolean;
+  notificationSentAt?: Date;
+  confirmedAt?: Date;
+  notes?: string;
+}
+
+interface TimeSlotLean {
+  _id?: Types.ObjectId;
+  slotName: string;
+  slotType: string;
+  startTime: string;
+  endTime: string;
+  djAssignments: DJAssignmentLean[];
+  maxDJs?: number;
+  notes?: string;
+}
+
+interface RunOfShowLean {
+  _id: Types.ObjectId;
+  eventId: Types.ObjectId;
+  timeSlots: TimeSlotLean[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface VenuePopulated {
+  _id: Types.ObjectId;
+  name: string;
+  city: string;
+  state: string;
+  address: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface EventPopulated {
+  _id: Types.ObjectId;
+  name: string;
+  venueId: VenuePopulated;
+  date: Date;
+  startTime: string;
+  endTime: string;
+  description?: string;
+  status: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 export default async function DJDashboard() {
   const user = await getCurrentUser();
@@ -40,7 +92,7 @@ export default async function DJDashboard() {
               Your account has been created. An admin will set up your DJ profile soon.
             </p>
             <p className="text-sm text-slate-500">
-              Once your profile is set up, you'll be able to view your bookings and schedules here.
+              Once your profile is set up, you&apos;ll be able to view your bookings and schedules here.
             </p>
           </div>
         </main>
@@ -55,18 +107,18 @@ export default async function DJDashboard() {
     'timeSlots.djAssignments.djId': user.djId,
   })
     .populate('eventId')
-    .lean();
+    .lean<RunOfShowLean[]>();
 
   // Extract events and filter DJ's specific time slots
   const bookings = await Promise.all(
     runOfShows.map(async (ros) => {
-      const event = await Event.findById(ros.eventId).populate('venueId').lean();
+      const event = await Event.findById(ros.eventId).populate('venueId').lean<EventPopulated>();
       if (!event) return null;
 
       const djSlots = ros.timeSlots
-        .map((slot) => {
+        .map((slot: TimeSlotLean) => {
           const djAssignment = slot.djAssignments.find(
-            (assignment) => assignment.djId.toString() === user.djId?.toString()
+            (assignment: DJAssignmentLean) => assignment.djId.toString() === user.djId?.toString()
           );
           if (!djAssignment) return null;
           return {

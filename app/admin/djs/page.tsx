@@ -3,6 +3,19 @@ import { isAdmin } from '@/lib/auth';
 import dbConnect from '@/lib/db';
 import DJ from '@/models/DJ';
 import Link from 'next/link';
+import { Types } from 'mongoose';
+
+interface DJLean {
+  _id: Types.ObjectId;
+  name: string;
+  email: string;
+  genres: string[];
+  phone?: string;
+  bookingCount: number;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 export default async function ManageDJsPage() {
   const admin = await isAdmin();
@@ -13,7 +26,7 @@ export default async function ManageDJsPage() {
 
   await dbConnect();
 
-  const djs = await DJ.find({}).sort({ name: 1 }).lean();
+  const djs = await DJ.find({}).sort({ name: 1 }).lean<DJLean[]>();
 
   const serializedDJs = djs.map((dj) => ({
     ...dj,

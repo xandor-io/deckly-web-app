@@ -3,6 +3,24 @@ import { isAdmin } from '@/lib/auth';
 import dbConnect from '@/lib/db';
 import Venue from '@/models/Venue';
 import Link from 'next/link';
+import { Types } from 'mongoose';
+
+interface VenueLean {
+  _id: Types.ObjectId;
+  name: string;
+  address: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  capacity?: number;
+  contactEmail: string;
+  contactPhone?: string;
+  isActive: boolean;
+  autoImportEnabled: boolean;
+  lastImportDate?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 export default async function ManageVenuesPage() {
   const admin = await isAdmin();
@@ -13,7 +31,7 @@ export default async function ManageVenuesPage() {
 
   await dbConnect();
 
-  const venues = await Venue.find({}).sort({ name: 1 }).lean();
+  const venues = await Venue.find({}).sort({ name: 1 }).lean<VenueLean[]>();
 
   const serializedVenues = venues.map((venue) => ({
     ...venue,

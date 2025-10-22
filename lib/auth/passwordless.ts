@@ -18,8 +18,8 @@ export async function requestOTP(email: string): Promise<void> {
         scope: 'openid profile email',
       },
     });
-  } catch (error: any) {
-    console.error('Error requesting OTP:', error.response?.data || error.message);
+  } catch (error) {
+    console.error('Error requesting OTP:', error);
     throw new Error('Failed to send OTP code');
   }
 }
@@ -44,8 +44,8 @@ export async function verifyOTP(email: string, otp: string): Promise<{ access_to
     });
 
     return response.data;
-  } catch (error: any) {
-    console.error('Error verifying OTP:', error.response?.data || error.message);
+  } catch (error) {
+    console.error('Error verifying OTP:', error);
     throw new Error('Invalid or expired OTP code');
   }
 }

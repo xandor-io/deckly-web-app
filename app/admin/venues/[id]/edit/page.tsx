@@ -50,8 +50,8 @@ export default function EditVenuePage() {
           autoImportEnabled: data.venue.autoImportEnabled,
           isActive: data.venue.isActive,
         });
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {
         setLoading(false);
       }
@@ -83,8 +83,8 @@ export default function EditVenuePage() {
       }
 
       router.push('/admin/venues');
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
       setSaving(false);
     }
   };

@@ -2,11 +2,12 @@
 
 import { Calendar, dateFnsLocalizer, View } from 'react-big-calendar';
 import { format, parse, startOfWeek, getDay } from 'date-fns';
+import { enUS } from 'date-fns/locale';
 import { useState, useMemo } from 'react';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 const locales = {
-  'en-US': require('date-fns/locale/en-US'),
+  'en-US': enUS,
 };
 
 const localizer = dateFnsLocalizer({
@@ -43,10 +44,8 @@ export default function EventCalendar({
   const [view, setView] = useState<View>('month');
   const [date, setDate] = useState(new Date());
 
-  const { defaultDate, max, views } = useMemo(
+  const { views } = useMemo(
     () => ({
-      defaultDate: new Date(),
-      max: new Date(2025, 11, 31, 23, 59, 59),
       views: ['month', 'week', 'day'] as View[],
     }),
     []

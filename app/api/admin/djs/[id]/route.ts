@@ -2,10 +2,23 @@ import { NextRequest, NextResponse } from 'next/server';
 import { isAdmin } from '@/lib/auth';
 import dbConnect from '@/lib/db';
 import DJ from '@/models/DJ';
+import { Types } from 'mongoose';
+
+interface DJLean {
+  _id: Types.ObjectId;
+  name: string;
+  email: string;
+  genres: string[];
+  phone?: string;
+  bookingCount: number;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const admin = await isAdmin();
@@ -16,7 +29,8 @@ export async function GET(
 
     await dbConnect();
 
-    const dj = await DJ.findById(params.id).lean();
+    const { id } = await params;
+    const dj = await DJ.findById(id).lean<DJLean>();
 
     if (!dj) {
       return NextResponse.json({ error: 'DJ not found' }, { status: 404 });
@@ -30,10 +44,10 @@ export async function GET(
     };
 
     return NextResponse.json({ success: true, dj: serializedDJ });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error fetching DJ:', error);
     return NextResponse.json(
-      { error: error.message || 'Failed to fetch DJ' },
+      { error: error instanceof Error ? error.message : 'Failed to fetch DJ' },
       { status: 500 }
     );
   }
@@ -41,7 +55,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const admin = await isAdmin();
@@ -53,8 +67,9 @@ export async function PUT(
     await dbConnect();
 
     const data = await request.json();
+    const { id } = await params;
 
-    const dj = await DJ.findByIdAndUpdate(params.id, data, {
+    const dj = await DJ.findByIdAndUpdate(id, data, {
       new: true,
       runValidators: true,
     });
@@ -64,10 +79,10 @@ export async function PUT(
     }
 
     return NextResponse.json({ success: true, dj });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error updating DJ:', error);
 
-    if (error.code === 11000) {
+    if (error && typeof error === 'object' && 'code' in error && error.code === 11000) {
       return NextResponse.json(
         { error: 'A DJ with this email already exists' },
         { status: 400 }
@@ -75,7 +90,7 @@ export async function PUT(
     }
 
     return NextResponse.json(
-      { error: error.message || 'Failed to update DJ' },
+      { error: error instanceof Error ? error.message : 'Failed to update DJ' },
       { status: 500 }
     );
   }

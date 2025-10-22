@@ -3,6 +3,29 @@ import { isAdmin } from '@/lib/auth';
 import dbConnect from '@/lib/db';
 import Event from '@/models/Event';
 import AdminDashboard from './AdminDashboard';
+import { Types } from 'mongoose';
+
+interface VenuePopulated {
+  _id: Types.ObjectId;
+  name: string;
+  city: string;
+  state: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface EventLean {
+  _id: Types.ObjectId;
+  name: string;
+  venueId: VenuePopulated;
+  date: Date;
+  startTime: string;
+  endTime: string;
+  description?: string;
+  status: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 export default async function AdminPage() {
   const admin = await isAdmin();
@@ -13,7 +36,7 @@ export default async function AdminPage() {
 
   await dbConnect();
 
-  const events = await Event.find({}).populate('venueId').sort({ date: 1 }).lean();
+  const events = await Event.find({}).populate('venueId').sort({ date: 1 }).lean<EventLean[]>();
 
   const serializedEvents = events.map((event) => ({
     ...event,

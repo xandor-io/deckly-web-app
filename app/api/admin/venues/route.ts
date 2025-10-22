@@ -18,11 +18,11 @@ export async function POST(request: NextRequest) {
     const venue = await Venue.create(data);
 
     return NextResponse.json({ success: true, venue }, { status: 201 });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error creating venue:', error);
 
     return NextResponse.json(
-      { error: error.message || 'Failed to create venue' },
+      { error: error instanceof Error ? error.message : 'Failed to create venue' },
       { status: 500 }
     );
   }
