@@ -55,4 +55,6 @@ const UserSchema = new Schema<IUser>(
 UserSchema.index({ role: 1 });
 UserSchema.index({ djId: 1 });
 
-export default mongoose.models.User || mongoose.model<IUser>('User', UserSchema);
+const User = (mongoose.models.User as mongoose.Model<IUser>) || mongoose.model<IUser>('User', UserSchema);
+
+export default User;

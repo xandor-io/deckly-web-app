@@ -96,4 +96,7 @@ VenueSchema.index({ city: 1, state: 1 });
 VenueSchema.index({ isActive: 1 });
 VenueSchema.index({ autoImportEnabled: 1, lastImportDate: 1 });
 
-export default mongoose.models.Venue || mongoose.model<IVenue>('Venue', VenueSchema);
+// Use type assertion to avoid TypeScript errors
+const Venue = (mongoose.models.Venue as mongoose.Model<IVenue>) || mongoose.model<IVenue>('Venue', VenueSchema);
+
+export default Venue;

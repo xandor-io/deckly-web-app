@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation';
 import { isAdmin } from '@/lib/auth';
 import dbConnect from '@/lib/db';
-import Event from '@/models/Event';
 import AdminDashboard from './AdminDashboard';
 import { Types } from 'mongoose';
 
@@ -35,6 +34,10 @@ export default async function AdminPage() {
   }
 
   await dbConnect();
+
+  // Import models after dbConnect to ensure proper registration
+  const Event = (await import('@/models/Event')).default;
+  const Venue = (await import('@/models/Venue')).default;
 
   const events = await Event.find({}).populate('venueId').sort({ date: 1 }).lean<EventLean[]>();
 

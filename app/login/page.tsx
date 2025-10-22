@@ -6,6 +6,7 @@ import { signIn, useSession } from 'next-auth/react';
 import OTPInput from '@/components/auth/OTPInput';
 import LoadingScreen from '@/components/LoadingScreen';
 import DecklyLogo from '@/components/DecklyLogo';
+import { ShaderBackground } from '@/components/ShaderBackground';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -113,15 +114,16 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-900 px-4">
-      <div className="w-full max-w-md">
-        <div className="bg-slate-800/50 border border-slate-700 rounded-3xl shadow-2xl p-8">
+    <div className="relative min-h-screen flex items-center justify-center px-4">
+      <ShaderBackground />
+      <div className="relative z-10 w-full max-w-md">
+        <div className="bg-card/50 backdrop-blur-xl border border-border rounded-3xl shadow-2xl p-8">
           {/* Logo/Title */}
           <div className="text-center mb-8">
             <div className="flex items-center justify-center mb-4">
               <DecklyLogo className="h-10" />
             </div>
-            <p className="text-slate-400">
+            <p className="text-muted-foreground">
               {showOTP ? 'Enter verification code' : 'Sign in to your account'}
             </p>
           </div>
@@ -130,7 +132,7 @@ export default function LoginPage() {
             /* Email Input Form */
             <form onSubmit={handleEmailSubmit} className="space-y-6">
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-slate-300 mb-2">
+                <label htmlFor="email" className="block text-sm font-medium text-foreground/80 mb-2">
                   Email address
                 </label>
                 <input
@@ -139,14 +141,14 @@ export default function LoginPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 rounded-lg border border-slate-600 bg-slate-900 text-white placeholder:text-slate-500 focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition duration-200 outline-none disabled:bg-slate-800 disabled:cursor-not-allowed"
+                  className="w-full px-4 py-3 rounded-lg border border-input bg-background/50 text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:border-transparent transition duration-200 outline-none disabled:opacity-50 disabled:cursor-not-allowed"
                   placeholder="you@example.com"
                   disabled={loading}
                 />
               </div>
 
               {error && (
-                <div className="text-sm text-red-400 bg-red-900/20 border border-red-800 rounded-lg p-3">
+                <div className="text-sm text-destructive bg-destructive/10 border border-destructive/50 rounded-lg p-3">
                   {error}
                 </div>
               )}
@@ -154,7 +156,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-cyan-400 to-indigo-400 hover:opacity-90 text-slate-900 font-semibold py-3 px-6 rounded-lg transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 px-6 rounded-lg transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? 'Sending code...' : 'Continue with Email'}
               </button>
@@ -163,8 +165,8 @@ export default function LoginPage() {
             /* OTP Input Form */
             <div className="space-y-6">
               <div className="text-center">
-                <p className="text-sm text-slate-400 mb-6">
-                  We sent a 6-digit code to <span className="font-semibold text-white">{email}</span>
+                <p className="text-sm text-muted-foreground mb-6">
+                  We sent a 6-digit code to <span className="font-semibold text-foreground">{email}</span>
                 </p>
               </div>
 
@@ -176,7 +178,7 @@ export default function LoginPage() {
               />
 
               {error && (
-                <div className="text-sm text-red-400 bg-red-900/20 border border-red-800 rounded-lg p-3 text-center">
+                <div className="text-sm text-destructive bg-destructive/10 border border-destructive/50 rounded-lg p-3 text-center">
                   {error}
                 </div>
               )}
@@ -186,7 +188,7 @@ export default function LoginPage() {
                   type="button"
                   onClick={handleResendCode}
                   disabled={loading}
-                  className="text-sm text-cyan-400 hover:text-cyan-300 font-medium disabled:opacity-50"
+                  className="text-sm text-accent hover:text-accent/80 font-medium disabled:opacity-50"
                 >
                   Resend code
                 </button>
@@ -199,7 +201,7 @@ export default function LoginPage() {
                   setOtp('');
                   setError(null);
                 }}
-                className="w-full text-slate-400 hover:text-white font-medium py-2 transition duration-200"
+                className="w-full text-muted-foreground hover:text-foreground font-medium py-2 transition duration-200"
               >
                 ← Back to email
               </button>
@@ -208,7 +210,7 @@ export default function LoginPage() {
         </div>
 
         {/* Footer */}
-        <p className="text-center text-slate-500 text-sm mt-6">
+        <p className="text-center text-muted-foreground text-sm mt-6">
           Secure passwordless authentication powered by Auth0
         </p>
       </div>

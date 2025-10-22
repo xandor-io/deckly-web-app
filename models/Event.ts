@@ -86,4 +86,6 @@ EventSchema.index({ date: 1, status: 1 });
 EventSchema.index({ status: 1 });
 EventSchema.index({ isImported: 1, importSource: 1 });
 
-export default mongoose.models.Event || mongoose.model<IEvent>('Event', EventSchema);
+const Event = (mongoose.models.Event as mongoose.Model<IEvent>) || mongoose.model<IEvent>('Event', EventSchema);
+
+export default Event;

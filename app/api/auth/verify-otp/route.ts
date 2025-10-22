@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { verifyOTP } from '@/lib/auth/passwordless';
 import dbConnect from '@/lib/db';
 import User, { UserRole } from '@/models/User';
+import DJ from '@/models/DJ';
 
 export async function POST(request: NextRequest) {
   try {

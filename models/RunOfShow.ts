@@ -150,4 +150,6 @@ const RunOfShowSchema = new Schema<IRunOfShow>(
 RunOfShowSchema.index({ 'timeSlots.djAssignments.djId': 1 });
 RunOfShowSchema.index({ 'timeSlots.djAssignments.status': 1 });
 
-export default mongoose.models.RunOfShow || mongoose.model<IRunOfShow>('RunOfShow', RunOfShowSchema);
+const RunOfShow = (mongoose.models.RunOfShow as mongoose.Model<IRunOfShow>) || mongoose.model<IRunOfShow>('RunOfShow', RunOfShowSchema);
+
+export default RunOfShow;

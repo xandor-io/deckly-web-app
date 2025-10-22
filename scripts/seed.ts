@@ -2,14 +2,8 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import path from 'path';
 
-// Load environment variables
+// Load environment variables first
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
-
-import Venue from '../models/Venue';
-import DJ, { DJGenre } from '../models/DJ';
-import Event, { EventStatus } from '../models/Event';
-import RunOfShow, { SlotType, BookingStatus } from '../models/RunOfShow';
-import User, { UserRole } from '../models/User';
 
 const MONGODB_URI = process.env.MONGODB_URI!;
 
@@ -17,8 +11,20 @@ async function seed() {
   try {
     console.log('🌱 Starting database seed...');
 
+    // Connect to MongoDB first
     await mongoose.connect(MONGODB_URI);
     console.log('✅ Connected to MongoDB');
+
+    // Import models AFTER connecting to database
+    const { default: Venue } = await import('../models/Venue');
+    const { default: DJ, DJGenre } = await import('../models/DJ');
+    const { default: Event, EventStatus } = await import('../models/Event');
+    const {
+      default: RunOfShow,
+      SlotType,
+      BookingStatus,
+    } = await import('../models/RunOfShow');
+    const { default: User, UserRole } = await import('../models/User');
 
     // Clear existing data
     console.log('🗑️  Clearing existing data...');
@@ -44,7 +50,8 @@ async function seed() {
         description: 'Premier nightclub in downtown Miami',
         contactEmail: 'contact@grandclub.com',
         contactPhone: '305-555-0100',
-        eventSourceUrl: 'https://www.ticketmaster.com/the-grand-club-tickets-miami/venue/123456',
+        eventSourceUrl:
+          'https://www.ticketmaster.com/the-grand-club-tickets-miami/venue/123456',
         autoImportEnabled: true,
         isActive: true,
       },
@@ -168,30 +175,9 @@ async function seed() {
     const users = await User.create([
       {
         email: 'hello@xandor.io',
-        auth0Id: 'auth0|admin123',
+        auth0Id: 'auth0|68f0595ee1505ccb23846720',
         role: UserRole.ADMIN,
         name: 'Admin User',
-      },
-      {
-        email: djs[0].email,
-        auth0Id: 'auth0|dj001',
-        role: UserRole.DJ,
-        djId: djs[0]._id,
-        name: djs[0].name,
-      },
-      {
-        email: djs[1].email,
-        auth0Id: 'auth0|dj002',
-        role: UserRole.DJ,
-        djId: djs[1]._id,
-        name: djs[1].name,
-      },
-      {
-        email: djs[2].email,
-        auth0Id: 'auth0|dj003',
-        role: UserRole.DJ,
-        djId: djs[2]._id,
-        name: djs[2].name,
       },
     ]);
     console.log(`✅ Created ${users.length} users`);
@@ -387,7 +373,6 @@ async function seed() {
     console.log('\n👤 Admin credentials:');
     console.log(`   Email: hello@xandor.io`);
     console.log(`   Auth0 ID: auth0|admin123`);
-
   } catch (error) {
     console.error('❌ Error seeding database:', error);
     process.exit(1);

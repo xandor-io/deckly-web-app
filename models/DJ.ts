@@ -94,4 +94,6 @@ const DJSchema = new Schema<IDJ>(
 // Note: email and auth0Id already have unique indexes from the schema definition
 DJSchema.index({ genres: 1, bookingCount: 1 });
 
-export default mongoose.models.DJ || mongoose.model<IDJ>('DJ', DJSchema);
+const DJ = (mongoose.models.DJ as mongoose.Model<IDJ>) || mongoose.model<IDJ>('DJ', DJSchema);
+
+export default DJ;

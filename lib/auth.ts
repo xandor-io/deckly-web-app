@@ -2,6 +2,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/auth-options';
 import dbConnect from './db';
 import User, { UserRole } from '@/models/User';
+import DJ from '@/models/DJ';
 
 export async function getCurrentUser() {
   const session = await getServerSession(authOptions);

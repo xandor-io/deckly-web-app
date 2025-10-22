@@ -3,6 +3,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import { verifyOTP } from '@/lib/auth/passwordless';
 import dbConnect from '@/lib/db';
 import User, { UserRole } from '@/models/User';
+import DJ from '@/models/DJ';
 
 export const authOptions: NextAuthOptions = {
   providers: [
