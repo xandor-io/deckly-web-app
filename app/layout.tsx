@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import NextAuthSessionProvider from '@/components/providers/SessionProvider';
 import { Geist, Geist_Mono } from "next/font/google";
-import { CustomCursor } from "@/components/CustomCursor";
 import { GrainOverlay } from "@/components/GrainOverlay";
 import "./globals.css";
 
@@ -30,7 +29,6 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <CustomCursor />
         <GrainOverlay />
         <NextAuthSessionProvider>{children}</NextAuthSessionProvider>
       </body>
