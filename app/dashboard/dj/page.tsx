@@ -4,9 +4,9 @@ import dbConnect from '@/lib/db';
 import RunOfShow from '@/models/RunOfShow';
 import Event from '@/models/Event';
 import { format } from 'date-fns';
-import LogoutButton from '@/components/auth/LogoutButton';
-import DecklyLogo from '@/components/DecklyLogo';
 import { ShaderBackground } from '@/components/ShaderBackground';
+import { WhiteOverlay } from '@/components/WhiteOverlay';
+import { DashboardHeader } from '@/components/DashboardHeader';
 import { Types } from 'mongoose';
 
 interface DJAssignmentLean {
@@ -67,33 +67,37 @@ export default async function DJDashboard() {
     redirect('/login');
   }
 
-  // If user doesn't have a DJ profile yet, show a setup message
+  // If user doesn't have a profile yet, show a setup message
   if (!user.djId) {
+    const userInitials =
+      user.name
+        ?.trim()
+        .split(/\s+/)
+        .map((part) => part[0])
+        .join('')
+        .slice(0, 2)
+        .toUpperCase() ||
+      user.email?.slice(0, 2)?.toUpperCase() ||
+      'DJ';
+
     return (
       <div className="relative min-h-screen">
         <ShaderBackground />
-        <nav className="relative z-10 border-b border-border/50 backdrop-blur-md">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between h-16 items-center">
-              <div className="flex items-center gap-8">
-                <DecklyLogo />
-                <h1 className="text-xl font-semibold text-foreground">DJ Dashboard</h1>
-              </div>
-              <div className="flex items-center gap-4">
-                <span className="text-muted-foreground">{user.name || user.email}</span>
-                <LogoutButton className="text-sm text-muted-foreground hover:text-foreground" />
-              </div>
-            </div>
-          </div>
-        </nav>
+        <WhiteOverlay />
+        <DashboardHeader
+          homeHref="/dashboard/dj"
+          title="Deckly"
+          subtitle="User Dashboard"
+          userInitials={userInitials}
+        />
 
-        <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="bg-card/50 backdrop-blur-xl border border-border rounded-2xl p-8 text-center">
+        <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-8 lg:pt-32">
+          <div className="rounded-2xl border border-foreground/20 bg-foreground/15 p-8 text-center">
             <h2 className="text-2xl font-semibold text-foreground mb-4">Welcome to Deckly!</h2>
-            <p className="text-muted-foreground mb-6">
-              Your account has been created. An admin will set up your DJ profile soon.
+            <p className="text-foreground mb-6">
+              Your account has been created. An admin will set up your profile soon.
             </p>
-            <p className="text-sm text-muted-foreground/80">
+            <p className="text-sm text-foreground">
               Once your profile is set up, you&apos;ll be able to view your bookings and schedules here.
             </p>
           </div>
@@ -142,26 +146,30 @@ export default async function DJDashboard() {
 
   const validBookings = bookings.filter((b) => b !== null);
 
+  const userInitials =
+    user.name
+      ?.trim()
+      .split(/\s+/)
+      .map((part) => part[0])
+      .join('')
+      .slice(0, 2)
+      .toUpperCase() ||
+    user.email?.slice(0, 2)?.toUpperCase() ||
+    'DJ';
+
   return (
     <div className="relative min-h-screen">
       <ShaderBackground />
-      <nav className="relative z-10 border-b border-border/50 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            <div className="flex items-center gap-8">
-              <DecklyLogo />
-              <h1 className="text-xl font-semibold text-foreground">DJ Dashboard</h1>
-            </div>
-            <div className="flex items-center gap-4">
-              <span className="text-muted-foreground">{user.name || user.email}</span>
-              <LogoutButton className="text-sm text-muted-foreground hover:text-foreground" />
-            </div>
-          </div>
-        </div>
-      </nav>
+      <WhiteOverlay />
+      <DashboardHeader
+        homeHref="/dashboard/dj"
+        title="Deckly"
+        subtitle="User Dashboard"
+        userInitials={userInitials}
+      />
 
-      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-card/50 backdrop-blur-xl border border-border rounded-2xl p-6 mb-6">
+      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-8 lg:pt-32">
+        <div className="rounded-2xl border border-foreground/20 bg-foreground/15 p-6 mb-6">
           <h2 className="text-xl font-semibold text-foreground mb-4">Your Profile</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -198,7 +206,7 @@ export default async function DJDashboard() {
           </div>
         </div>
 
-        <div className="bg-card/50 backdrop-blur-xl border border-border rounded-2xl p-6">
+        <div className="rounded-2xl border border-foreground/20 bg-foreground/15 p-6">
           <h2 className="text-xl font-semibold text-foreground mb-4">Your Bookings</h2>
 
           {validBookings.length === 0 ? (
