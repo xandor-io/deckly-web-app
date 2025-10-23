@@ -1,9 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter, useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { DJGenre } from '@/models/DJ';
+
+import { DJGenre } from '@/types/dj';
+import { MagneticButton } from '@/components/MagneticButton';
 import LoadingScreen from '@/components/LoadingScreen';
 
 export default function EditDJPage() {
@@ -89,143 +91,140 @@ export default function EditDJPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            <div className="flex items-center gap-4">
-              <Link href="/admin/djs" className="text-gray-600 hover:text-gray-900">
-                ← Back to DJs
-              </Link>
-              <h1 className="text-2xl font-bold text-gray-900">Edit DJ</h1>
+    <div className="mx-auto max-w-3xl">
+      <div className="mb-6 flex items-center gap-4">
+        <Link
+          href="/admin/djs"
+          className="text-sm text-foreground/70 transition hover:text-foreground"
+        >
+          ← Back to DJs
+        </Link>
+        <h1 className="text-2xl font-bold text-foreground">Edit DJ</h1>
+      </div>
+
+      <div className="rounded-3xl border border-foreground/20 bg-foreground/15 p-8 shadow-2xl backdrop-blur-xl">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {error && (
+            <div className="rounded-lg border border-destructive/50 bg-destructive/10 px-4 py-3 text-destructive backdrop-blur-sm">
+              {error}
+            </div>
+          )}
+
+          <div>
+            <label htmlFor="name" className="mb-2 block text-sm font-medium text-foreground/80">
+              Name *
+            </label>
+            <input
+              type="text"
+              id="name"
+              required
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              className="w-full rounded-lg border border-input bg-background/50 px-4 py-3 text-foreground placeholder:text-muted-foreground outline-none transition duration-200 backdrop-blur-sm focus:border-transparent focus:ring-2 focus:ring-ring"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="email" className="mb-2 block text-sm font-medium text-foreground/80">
+              Email *
+            </label>
+            <input
+              type="email"
+              id="email"
+              required
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              className="w-full rounded-lg border border-input bg-background/50 px-4 py-3 text-foreground placeholder:text-muted-foreground outline-none transition duration-200 backdrop-blur-sm focus:border-transparent focus:ring-2 focus:ring-ring"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="phone" className="mb-2 block text-sm font-medium text-foreground/80">
+              Phone
+            </label>
+            <input
+              type="tel"
+              id="phone"
+              value={formData.phone}
+              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              className="w-full rounded-lg border border-input bg-background/50 px-4 py-3 text-foreground placeholder:text-muted-foreground outline-none transition duration-200 backdrop-blur-sm focus:border-transparent focus:ring-2 focus:ring-ring"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="bio" className="mb-2 block text-sm font-medium text-foreground/80">
+              Bio
+            </label>
+            <textarea
+              id="bio"
+              rows={4}
+              value={formData.bio}
+              onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
+              className="w-full rounded-lg border border-input bg-background/50 px-4 py-3 text-foreground placeholder:text-muted-foreground outline-none transition duration-200 backdrop-blur-sm focus:border-transparent focus:ring-2 focus:ring-ring"
+              maxLength={500}
+            />
+            <p className="mt-1 text-sm text-muted-foreground">
+              {formData.bio.length}/500 characters
+            </p>
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-medium text-foreground/80">
+              Genres * (select at least one)
+            </label>
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+              {allGenres.map((genre) => (
+                <label
+                  key={genre}
+                  className={`flex cursor-pointer items-center rounded-lg border-2 p-3 transition-all backdrop-blur-sm ${
+                    formData.genres.includes(genre)
+                      ? 'border-primary bg-primary/10'
+                      : 'border-border bg-background/30 hover:border-border/80'
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={formData.genres.includes(genre)}
+                    onChange={() => handleGenreToggle(genre)}
+                    className="h-4 w-4 rounded border-input text-primary focus:ring-ring"
+                  />
+                  <span className="ml-2 text-sm text-foreground">
+                    {genre.replace('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
+                  </span>
+                </label>
+              ))}
             </div>
           </div>
-        </div>
-      </nav>
 
-      <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white rounded-lg shadow p-8">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-                {error}
-              </div>
-            )}
-
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                Name *
-              </label>
+          <div>
+            <label className="flex items-center rounded-lg border border-border bg-background/30 p-3 backdrop-blur-sm">
               <input
-                type="text"
-                id="name"
-                required
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent outline-none text-gray-900"
+                type="checkbox"
+                checked={formData.isActive}
+                onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+                className="h-4 w-4 rounded border-input text-primary focus:ring-ring"
               />
-            </div>
+              <span className="ml-2 text-sm text-foreground">
+                Active (available for bookings)
+              </span>
+            </label>
+          </div>
 
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                Email *
-              </label>
-              <input
-                type="email"
-                id="email"
-                required
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent outline-none text-gray-900"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                Phone
-              </label>
-              <input
-                type="tel"
-                id="phone"
-                value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent outline-none text-gray-900"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="bio" className="block text-sm font-medium text-gray-700 mb-2">
-                Bio
-              </label>
-              <textarea
-                id="bio"
-                rows={4}
-                value={formData.bio}
-                onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent outline-none text-gray-900"
-                maxLength={500}
-              />
-              <p className="text-sm text-gray-500 mt-1">{formData.bio.length}/500 characters</p>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Genres * (select at least one)
-              </label>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {allGenres.map((genre) => (
-                  <label
-                    key={genre}
-                    className={`flex items-center p-3 border-2 rounded-lg cursor-pointer transition-all ${
-                      formData.genres.includes(genre)
-                        ? 'border-purple-600 bg-purple-50'
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={formData.genres.includes(genre)}
-                      onChange={() => handleGenreToggle(genre)}
-                      className="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
-                    />
-                    <span className="ml-2 text-sm text-gray-900">
-                      {genre.replace('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
-                    </span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={formData.isActive}
-                  onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                  className="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
-                />
-                <span className="ml-2 text-sm text-gray-900">Active (available for bookings)</span>
-              </label>
-            </div>
-
-            <div className="flex gap-4 pt-4">
-              <button
-                type="submit"
-                disabled={saving || formData.genres.length === 0}
-                className="flex-1 bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {saving ? 'Saving...' : 'Save Changes'}
-              </button>
-              <Link
-                href="/admin/djs"
-                className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-900 font-semibold py-3 px-6 rounded-lg transition duration-200 text-center"
-              >
-                Cancel
-              </Link>
-            </div>
-          </form>
-        </div>
-      </main>
+          <div className="flex gap-4 pt-4">
+            <MagneticButton
+              type="submit"
+              disabled={saving || formData.genres.length === 0}
+              variant="primary"
+              className="flex-1 text-center disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {saving ? 'Saving...' : 'Save Changes'}
+            </MagneticButton>
+            <MagneticButton href="/admin/djs" variant="secondary" className="flex-1 text-center">
+              Cancel
+            </MagneticButton>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

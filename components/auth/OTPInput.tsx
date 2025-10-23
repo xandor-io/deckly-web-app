@@ -48,16 +48,16 @@ export default function OTPInput({ value, onChange, error, disabled }: OTPInputP
       <div
         key={i}
         className={`
-          relative w-12 h-14 flex items-center justify-center text-2xl font-semibold rounded-lg border-2 transition-all duration-200
+          relative w-12 h-14 flex items-center justify-center text-2xl font-semibold rounded-lg border-2 transition-all duration-200 backdrop-blur-sm
           ${isFilled
             ? error
-              ? 'border-red-500 bg-red-900/20 text-red-400'
-              : 'border-cyan-400 bg-cyan-400/10 text-cyan-400'
+              ? 'border-destructive bg-destructive/10 text-destructive'
+              : 'border-primary bg-primary/10 text-white'
             : error
-              ? 'border-red-800 bg-slate-900'
-              : 'border-slate-600 bg-slate-900 text-white'
+              ? 'border-destructive/50 bg-background/30'
+              : 'border-foreground/20 bg-background/30 text-foreground'
           }
-          ${isFocused && i === value.length && !error ? 'border-cyan-400 ring-2 ring-cyan-400/30' : ''}
+          ${isFocused && i === value.length && !error ? 'border-primary ring-2 ring-primary/30' : ''}
           ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-text'}
         `}
         onClick={handleClick}
@@ -65,7 +65,7 @@ export default function OTPInput({ value, onChange, error, disabled }: OTPInputP
         {digit}
         {showCursor && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-0.5 h-8 bg-cyan-400 animate-pulse" />
+            <div className="w-0.5 h-8 bg-primary animate-pulse" />
           </div>
         )}
       </div>

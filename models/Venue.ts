@@ -13,10 +13,19 @@ export interface IVenue extends Document {
   contactPhone?: string;
   imageUrl?: string;
   isActive: boolean;
+
+  // External service IDs
+  externalIds?: {
+    ticketmaster?: string;
+    posh?: string;
+  };
+
   // Event automation fields
   eventSourceUrl?: string;
   autoImportEnabled: boolean;
+  autoImportSources?: Array<'ticketmaster' | 'posh'>;
   lastImportDate?: Date;
+
   createdAt: Date;
   updatedAt: Date;
 }
@@ -73,6 +82,10 @@ const VenueSchema = new Schema<IVenue>(
       type: Boolean,
       default: true,
     },
+    externalIds: {
+      ticketmaster: String,
+      posh: String,
+    },
     // Event automation fields - can be Ticketmaster, Posh, or any other platform
     eventSourceUrl: {
       type: String,
@@ -82,6 +95,12 @@ const VenueSchema = new Schema<IVenue>(
       type: Boolean,
       default: false,
     },
+    autoImportSources: [
+      {
+        type: String,
+        enum: ['ticketmaster', 'posh'],
+      },
+    ],
     lastImportDate: {
       type: Date,
     },
@@ -95,6 +114,7 @@ const VenueSchema = new Schema<IVenue>(
 VenueSchema.index({ city: 1, state: 1 });
 VenueSchema.index({ isActive: 1 });
 VenueSchema.index({ autoImportEnabled: 1, lastImportDate: 1 });
+VenueSchema.index({ 'externalIds.ticketmaster': 1 });
 
 // Use type assertion to avoid TypeScript errors
 const Venue = (mongoose.models.Venue as mongoose.Model<IVenue>) || mongoose.model<IVenue>('Venue', VenueSchema);

@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "seed": "tsx scripts/seed.ts"
+    "seed": "tsx scripts/seed.ts",
+    "find-venues": "tsx scripts/find-ticketmaster-venues.ts",
+    "import-events": "tsx scripts/import-events.ts"
   },
   "dependencies": {
     "@auth0/nextjs-auth0": "^4.10.0",

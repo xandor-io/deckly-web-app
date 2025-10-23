@@ -1,17 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
-
-export enum DJGenre {
-  OPEN_FORMAT = 'open_format',
-  HOUSE = 'house',
-  TECH = 'tech',
-  AFROHOUSE = 'afrohouse',
-  TECHNO = 'techno',
-  PROGRESSIVE = 'progressive',
-  DEEP_HOUSE = 'deep_house',
-  BASS = 'bass',
-  HIP_HOP = 'hip_hop',
-  RNB = 'rnb',
-}
+import { DJGenre } from '@/types/dj';
 
 export interface IDJ extends Document {
   _id: string;

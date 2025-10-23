@@ -3,7 +3,7 @@ import { isAdmin } from '@/lib/auth';
 import dbConnect from '@/lib/db';
 import Venue from '@/models/Venue';
 import Link from 'next/link';
-import { ShaderBackground } from '@/components/ShaderBackground';
+import { MagneticButton } from '@/components/MagneticButton';
 import { Types } from 'mongoose';
 
 interface VenueLean {
@@ -43,127 +43,125 @@ export default async function ManageVenuesPage() {
   }));
 
   return (
-    <div className="relative min-h-screen">
-      <ShaderBackground />
-      <nav className="relative z-10 bg-card/30 backdrop-blur-md border-b border-border/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            <Link
-              href="/admin"
-              className="text-muted-foreground hover:text-foreground transition duration-200"
-            >
-              ← Back to Dashboard
-            </Link>
-            <Link
-              href="/admin/venues/new"
-              className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-4 py-2 rounded-lg transition duration-200"
-            >
-              Add New Venue
-            </Link>
-          </div>
+    <div className="mx-auto max-w-7xl">
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">Manage Venues</h1>
+          <p className="mt-1 text-sm text-foreground/70">
+            Keep venue information up to date across your network.
+          </p>
         </div>
-      </nav>
+        <MagneticButton href="/admin/venues/new" variant="primary">
+          Add New Venue
+        </MagneticButton>
+      </div>
 
-      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-3xl font-bold text-foreground mb-6">Manage Venues</h1>
-        <div className="bg-card/50 backdrop-blur-xl border border-border rounded-3xl shadow-2xl">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-border">
-              <thead className="bg-background/50">
+      <div className="overflow-hidden rounded-3xl border border-foreground/20 bg-foreground/15 shadow-2xl backdrop-blur-xl">
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-border/50">
+            <thead className="bg-background/30 backdrop-blur-sm">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Name
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Location
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Contact
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Capacity
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Auto Import
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Status
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border/30">
+              {serializedVenues.length === 0 ? (
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    Name
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
-                    Location
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
-                    Contact
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
-                    Capacity
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
-                    Auto Import
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
-                    Actions
-                  </th>
+                  <td colSpan={7} className="px-6 py-12 text-center text-muted-foreground">
+                    No venues found. Add your first venue to get started.
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-700">
-                {serializedVenues.length === 0 ? (
-                  <tr>
-                    <td colSpan={7} className="px-6 py-12 text-center text-slate-400">
-                      No venues found. Add your first venue to get started.
+              ) : (
+                serializedVenues.map((venue) => (
+                  <tr
+                    key={venue._id}
+                    className="transition duration-150 hover:bg-foreground/5 backdrop-blur-sm"
+                  >
+                    <td className="whitespace-nowrap px-6 py-4">
+                      <div className="text-sm font-medium text-foreground">
+                        {venue.name}
+                      </div>
+                    </td>
+                    <td className="whitespace-nowrap px-6 py-4">
+                      <div className="text-sm text-foreground">
+                        {venue.city}, {venue.state}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        {venue.zipCode}
+                      </div>
+                    </td>
+                    <td className="whitespace-nowrap px-6 py-4">
+                      <div className="text-sm text-foreground">
+                        {venue.contactEmail}
+                      </div>
+                      {venue.contactPhone && (
+                        <div className="text-sm text-muted-foreground">
+                          {venue.contactPhone}
+                        </div>
+                      )}
+                    </td>
+                    <td className="whitespace-nowrap px-6 py-4">
+                      <div className="text-sm text-foreground">
+                        {venue.capacity ? venue.capacity.toLocaleString() : 'N/A'}
+                      </div>
+                    </td>
+                    <td className="whitespace-nowrap px-6 py-4">
+                      <span
+                        className={`rounded-full border px-3 py-1 text-xs font-medium backdrop-blur-sm ${
+                          venue.autoImportEnabled
+                            ? 'border-primary/30 bg-primary/20 text-primary'
+                            : 'border-foreground/20 bg-foreground/10 text-foreground/80'
+                        }`}
+                      >
+                        {venue.autoImportEnabled ? 'Enabled' : 'Disabled'}
+                      </span>
+                    </td>
+                    <td className="whitespace-nowrap px-6 py-4">
+                      <span
+                        className={`rounded-full border px-3 py-1 text-xs font-medium backdrop-blur-sm ${
+                          venue.isActive
+                            ? 'border-green-500/30 bg-green-500/20 text-green-400'
+                            : 'border-red-500/30 bg-red-500/20 text-red-400'
+                        }`}
+                      >
+                        {venue.isActive ? 'Active' : 'Inactive'}
+                      </span>
+                    </td>
+                    <td className="whitespace-nowrap px-6 py-4 text-sm font-medium">
+                      <Link
+                        href={`/admin/venues/${venue._id}/edit`}
+                        className="text-accent transition duration-200 hover:text-accent/80"
+                      >
+                        Edit
+                      </Link>
                     </td>
                   </tr>
-                ) : (
-                  serializedVenues.map((venue) => (
-                    <tr key={venue._id} className="hover:bg-slate-700/30 transition duration-150">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-white">
-                          {venue.name}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-white">
-                          {venue.city}, {venue.state}
-                        </div>
-                        <div className="text-sm text-slate-400">{venue.zipCode}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-white">{venue.contactEmail}</div>
-                        {venue.contactPhone && (
-                          <div className="text-sm text-slate-400">{venue.contactPhone}</div>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-white">
-                          {venue.capacity ? venue.capacity.toLocaleString() : 'N/A'}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span
-                          className={`px-3 py-1 rounded-full text-xs font-medium ${
-                            venue.autoImportEnabled
-                              ? 'bg-cyan-900/50 text-cyan-300 border border-cyan-700'
-                              : 'bg-slate-700 text-slate-300 border border-slate-600'
-                          }`}
-                        >
-                          {venue.autoImportEnabled ? 'Enabled' : 'Disabled'}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span
-                          className={`px-3 py-1 rounded-full text-xs font-medium ${
-                            venue.isActive
-                              ? 'bg-green-900/50 text-green-300 border border-green-700'
-                              : 'bg-red-900/50 text-red-300 border border-red-700'
-                          }`}
-                        >
-                          {venue.isActive ? 'Active' : 'Inactive'}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <Link
-                          href={`/admin/venues/${venue._id}/edit`}
-                          className="text-cyan-400 hover:text-cyan-300 transition duration-200"
-                        >
-                          Edit
-                        </Link>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
-      </main>
+      </div>
     </div>
   );
 }

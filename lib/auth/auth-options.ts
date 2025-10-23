@@ -73,6 +73,15 @@ export const authOptions: NextAuthOptions = {
         token.email = user.email;
         token.role = user.role;
         token.djId = user.djId;
+        token.name = user.name;
+      } else if (token.email) {
+        await dbConnect();
+        const existingUser = await User.findOne({ email: token.email }).select('name role djId');
+        if (existingUser) {
+          token.name = existingUser.name;
+          token.role = existingUser.role;
+          token.djId = existingUser.djId?.toString();
+        }
       }
       return token;
     },
@@ -83,6 +92,7 @@ export const authOptions: NextAuthOptions = {
         session.user.email = token.email as string;
         session.user.role = token.role as string;
         session.user.djId = token.djId as string;
+        session.user.name = token.name as string | undefined;
       }
       return session;
     },

@@ -41,17 +41,32 @@ export default async function AdminPage() {
 
   const events = await Event.find({}).populate('venueId').sort({ date: 1 }).lean<EventLean[]>();
 
-  const serializedEvents = events.map((event) => ({
-    ...event,
-    _id: event._id.toString(),
-    venueId: {
-      ...event.venueId,
-      _id: event.venueId._id.toString(),
-    },
-    date: event.date.toISOString(),
-    createdAt: event.createdAt.toISOString(),
-    updatedAt: event.updatedAt.toISOString(),
-  }));
+  const serializedEvents = events.map((event) => {
+    // Deep clone and serialize the event
+    const serialized: any = {
+      ...event,
+      _id: event._id.toString(),
+      venueId: {
+        ...event.venueId,
+        _id: event.venueId._id.toString(),
+      },
+      date: event.date.toISOString(),
+      createdAt: event.createdAt.toISOString(),
+      updatedAt: event.updatedAt.toISOString(),
+    };
+
+    // Serialize ticketmasterData if present
+    if (event.ticketmasterData) {
+      serialized.ticketmasterData = JSON.parse(JSON.stringify(event.ticketmasterData));
+    }
+
+    // Serialize externalIds if present
+    if (event.externalIds) {
+      serialized.externalIds = JSON.parse(JSON.stringify(event.externalIds));
+    }
+
+    return serialized;
+  });
 
   return <AdminDashboard events={serializedEvents} />;
 }

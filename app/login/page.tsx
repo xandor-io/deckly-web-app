@@ -114,59 +114,63 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center px-4">
+    <div className='relative min-h-screen flex items-center justify-center px-4'>
       <ShaderBackground />
-      <div className="relative z-10 w-full max-w-md">
-        <div className="bg-card/50 backdrop-blur-xl border border-border rounded-3xl shadow-2xl p-8">
+      <div className='relative z-10 w-full max-w-md'>
+        <div className='bg-foreground/15 backdrop-blur-xl border border-foreground/20 rounded-3xl shadow-2xl p-8'>
           {/* Logo/Title */}
-          <div className="text-center mb-8">
-            <div className="flex items-center justify-center mb-4">
-              <DecklyLogo className="h-10" />
+          <div className='text-center'>
+            <div className='flex items-center justify-center mb-4'>
+              <DecklyLogo className='h-10' theme='light' />
             </div>
-            <p className="text-muted-foreground">
-              {showOTP ? 'Enter verification code' : 'Sign in to your account'}
-            </p>
+            {/* <p className='text-foreground/80'>
+              {showOTP ? 'Enter verification code' : 'Lets Get Started!'}
+            </p> */}
           </div>
 
           {!showOTP ? (
             /* Email Input Form */
-            <form onSubmit={handleEmailSubmit} className="space-y-6">
+            <form onSubmit={handleEmailSubmit} className='space-y-6'>
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-foreground/80 mb-2">
+                <label
+                  htmlFor='email'
+                  className='block text-sm font-medium text-foreground/80 mb-2'
+                >
                   Email address
                 </label>
                 <input
-                  id="email"
-                  type="email"
+                  id='email'
+                  type='email'
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 rounded-lg border border-input bg-background/50 text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:border-transparent transition duration-200 outline-none disabled:opacity-50 disabled:cursor-not-allowed"
-                  placeholder="you@example.com"
+                  className='w-full px-4 py-3 rounded-lg border border-foreground/20 bg-foreground/10 backdrop-blur-md text-foreground placeholder:text-foreground/50 focus:ring-2 focus:ring-ring focus:border-transparent transition duration-200 outline-none disabled:opacity-50 disabled:cursor-not-allowed'
+                  placeholder='you@example.com'
                   disabled={loading}
                 />
               </div>
 
               {error && (
-                <div className="text-sm text-destructive bg-destructive/10 border border-destructive/50 rounded-lg p-3">
+                <div className='text-sm text-destructive bg-destructive/10 border border-destructive/50 rounded-lg p-3 backdrop-blur-sm'>
                   {error}
                 </div>
               )}
 
               <button
-                type="submit"
+                type='submit'
                 disabled={loading}
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 px-6 rounded-lg transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className='w-full bg-foreground/95 text-background hover:bg-foreground backdrop-blur-md font-semibold py-3 px-6 rounded-full transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
               >
                 {loading ? 'Sending code...' : 'Continue with Email'}
               </button>
             </form>
           ) : (
             /* OTP Input Form */
-            <div className="space-y-6">
-              <div className="text-center">
-                <p className="text-sm text-muted-foreground mb-6">
-                  We sent a 6-digit code to <span className="font-semibold text-foreground">{email}</span>
+            <div className='space-y-6'>
+              <div className='text-center'>
+                <p className='text-sm text-foreground/80 mb-6'>
+                  We sent a 6-digit code to{' '}
+                  <span className='font-semibold text-foreground'>{email}</span>
                 </p>
               </div>
 
@@ -178,30 +182,30 @@ export default function LoginPage() {
               />
 
               {error && (
-                <div className="text-sm text-destructive bg-destructive/10 border border-destructive/50 rounded-lg p-3 text-center">
+                <div className='text-sm text-destructive bg-destructive/10 border border-destructive/50 rounded-lg p-3 text-center backdrop-blur-sm'>
                   {error}
                 </div>
               )}
 
-              <div className="text-center">
+              <div className='text-center'>
                 <button
-                  type="button"
+                  type='button'
                   onClick={handleResendCode}
                   disabled={loading}
-                  className="text-sm text-accent hover:text-accent/80 font-medium disabled:opacity-50"
+                  className='text-sm text-accent hover:text-accent/80 font-medium disabled:opacity-50'
                 >
                   Resend code
                 </button>
               </div>
 
               <button
-                type="button"
+                type='button'
                 onClick={() => {
                   setShowOTP(false);
                   setOtp('');
                   setError(null);
                 }}
-                className="w-full text-muted-foreground hover:text-foreground font-medium py-2 transition duration-200"
+                className='w-full text-foreground/80 hover:text-foreground font-medium py-2 transition duration-200'
               >
                 ← Back to email
               </button>
@@ -210,9 +214,9 @@ export default function LoginPage() {
         </div>
 
         {/* Footer */}
-        <p className="text-center text-muted-foreground text-sm mt-6">
+        {/* <p className="text-center text-muted-foreground text-sm mt-6">
           Secure passwordless authentication powered by Auth0
-        </p>
+        </p> */}
       </div>
     </div>
   );
