@@ -100,6 +100,11 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
+  pages: {
+    signIn: '/login',
+    signOut: '/',
+    error: '/login',
+  },
   secret: process.env.NEXTAUTH_SECRET,
   debug: true, // Enable debug mode to see what's happening
 };

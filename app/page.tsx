@@ -19,17 +19,32 @@ export default function Home() {
 
   const scrollToSection = (index: number) => {
     if (scrollContainerRef.current) {
-      const sectionWidth = scrollContainerRef.current.offsetWidth;
-      scrollContainerRef.current.scrollTo({
-        left: sectionWidth * index,
-        behavior: 'smooth',
-      });
+      const isMobile = window.innerWidth < 768;
+
+      if (isMobile) {
+        // Vertical scroll on mobile
+        const sections = scrollContainerRef.current.children;
+        const targetSection = sections[index] as HTMLElement;
+        if (targetSection) {
+          targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      } else {
+        // Horizontal scroll on desktop
+        const sectionWidth = scrollContainerRef.current.offsetWidth;
+        scrollContainerRef.current.scrollTo({
+          left: sectionWidth * index,
+          behavior: 'smooth',
+        });
+      }
       setCurrentSection(index);
     }
   };
 
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
+      // Only apply horizontal scroll on desktop (md breakpoint: 768px)
+      if (window.innerWidth < 768) return;
+
       if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
         e.preventDefault();
 
@@ -104,7 +119,7 @@ export default function Home() {
   }, [currentSection]);
 
   return (
-    <main className='relative h-screen w-full overflow-hidden'>
+    <main className='relative md:h-screen md:overflow-hidden w-full'>
       <ShaderBackground />
 
       {/* Navigation */}
@@ -151,15 +166,15 @@ export default function Home() {
         </MagneticButton>
       </nav>
 
-      {/* Horizontal Scroll Container */}
+      {/* Horizontal Scroll Container (Desktop) / Vertical Scroll Container (Mobile) */}
       <div
         ref={scrollContainerRef}
         data-scroll-container
-        className='relative z-10 flex h-screen overflow-x-auto overflow-y-hidden'
+        className='relative z-10 flex md:h-screen h-auto overflow-x-auto overflow-y-hidden md:flex-row flex-col md:overflow-x-auto md:overflow-y-hidden overflow-x-hidden overflow-y-auto'
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         {/* Section 1: Hero/Home */}
-        <section className='flex min-h-screen w-screen shrink-0 flex-col justify-end px-6 pb-16 pt-24 md:px-12 md:pb-24'>
+        <section className='flex min-h-screen w-screen shrink-0 flex-col justify-center md:justify-end px-6 pb-16 pt-24 md:px-12 md:pb-24'>
           <div className='max-w-3xl'>
             <div className='mb-4 inline-block animate-in fade-in slide-in-from-bottom-4 rounded-full border border-foreground/20 bg-foreground/15 px-4 py-1.5 backdrop-blur-md duration-700'>
               <p className='font-mono text-xs text-foreground/90'>
@@ -177,14 +192,15 @@ export default function Home() {
                 manage schedules, and streamline your entire event workflow.
               </span>
             </p>
-            <div className='flex animate-in fade-in slide-in-from-bottom-4 flex-col gap-4 duration-1000 delay-300 sm:flex-row sm:items-center'>
-              <MagneticButton size='lg' variant='primary' href='/login'>
+            <div className='flex animate-in fade-in slide-in-from-bottom-4 flex-col gap-4 duration-1000 delay-300 sm:flex-row sm:items-center items-center w-full'>
+              <MagneticButton size='lg' variant='primary' href='/login' className='w-full sm:w-auto text-center'>
                 Get Started Free
               </MagneticButton>
               <MagneticButton
                 size='lg'
                 variant='secondary'
                 onClick={() => scrollToSection(2)}
+                className='w-full sm:w-auto text-center'
               >
                 View Solutions
               </MagneticButton>
