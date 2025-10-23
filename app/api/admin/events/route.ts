@@ -80,12 +80,14 @@ export async function POST(request: NextRequest) {
       .lean();
 
     // Serialize response
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const venueData = populated!.venueId as any;
     const serialized = {
       _id: populated!._id.toString(),
       name: populated!.name,
       venueId: {
-        _id: populated!.venueId._id.toString(),
-        name: populated!.venueId.name,
+        _id: venueData._id.toString(),
+        name: venueData.name,
       },
       date: populated!.date.toISOString(),
       startTime: populated!.startTime,

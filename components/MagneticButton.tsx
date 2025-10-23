@@ -26,7 +26,7 @@ export function MagneticButton({
 }: MagneticButtonProps) {
   const ref = useRef<HTMLButtonElement | HTMLAnchorElement>(null)
   const positionRef = useRef({ x: 0, y: 0 })
-  const rafRef = useRef<number>()
+  const rafRef = useRef<number | undefined>(undefined)
 
   const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
     if (!ref.current) return

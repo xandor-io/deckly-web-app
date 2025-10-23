@@ -6,13 +6,15 @@ import RunOfShowManager from './RunOfShowManager';
 export default async function ManageRunOfShowPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
   const admin = await isAdmin();
 
   if (!admin) {
     redirect('/dashboard/dj');
   }
+
+  const { id } = await params;
 
   await dbConnect();
 
@@ -22,24 +24,24 @@ export default async function ManageRunOfShowPage({
   const DJ = (await import('@/models/DJ')).default;
 
   // Fetch event with venue
-  const event = await Event.findById(params.id).populate('venueId').lean();
+  const event = await Event.findById(id).populate('venueId').lean();
 
   if (!event) {
     redirect('/admin');
   }
 
   // Fetch or create run of show
-  let runOfShow = await RunOfShow.findOne({ eventId: params.id })
+  let runOfShow = await RunOfShow.findOne({ eventId: id })
     .populate('timeSlots.djAssignments.djId')
     .lean();
 
   if (!runOfShow) {
     // Create a new run of show if it doesn't exist
-    runOfShow = await RunOfShow.create({
-      eventId: params.id,
+    const created = await RunOfShow.create({
+      eventId: id,
       timeSlots: [],
     });
-    runOfShow = await RunOfShow.findById(runOfShow._id)
+    runOfShow = await RunOfShow.findById(created._id)
       .populate('timeSlots.djAssignments.djId')
       .lean();
   }
@@ -48,6 +50,8 @@ export default async function ManageRunOfShowPage({
   const djs = await DJ.find({ isActive: true }).sort({ name: 1 }).lean();
 
   // Serialize data for client component
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const venueData = event.venueId as any;
   const serializedEvent = {
     _id: event._id.toString(),
     name: event.name,
@@ -56,8 +60,8 @@ export default async function ManageRunOfShowPage({
     endTime: event.endTime,
     status: event.status,
     venueId: {
-      _id: event.venueId._id.toString(),
-      name: event.venueId.name,
+      _id: venueData._id.toString(),
+      name: venueData.name,
     },
   };
 
@@ -73,19 +77,23 @@ export default async function ManageRunOfShowPage({
           endTime: slot.endTime,
           maxDJs: slot.maxDJs,
           notes: slot.notes,
-          djAssignments: slot.djAssignments.map((assignment) => ({
-            djId: {
-              _id: assignment.djId._id.toString(),
-              name: assignment.djId.name,
-              email: assignment.djId.email,
-              genres: assignment.djId.genres,
-            },
-            status: assignment.status,
-            notificationSent: assignment.notificationSent,
-            notificationSentAt: assignment.notificationSentAt?.toISOString(),
-            confirmedAt: assignment.confirmedAt?.toISOString(),
-            notes: assignment.notes,
-          })),
+          djAssignments: slot.djAssignments.map((assignment) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const djData = assignment.djId as any;
+            return {
+              djId: {
+                _id: djData._id.toString(),
+                name: djData.name,
+                email: djData.email,
+                genres: djData.genres,
+              },
+              status: assignment.status,
+              notificationSent: assignment.notificationSent,
+              notificationSentAt: assignment.notificationSentAt?.toISOString(),
+              confirmedAt: assignment.confirmedAt?.toISOString(),
+              notes: assignment.notes,
+            };
+          }),
         })),
       }
     : null;

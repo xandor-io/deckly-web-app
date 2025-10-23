@@ -31,21 +31,25 @@ export default async function EventsPage() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const serializedEvents = events.map((event) => ({
-    _id: event._id.toString(),
-    name: event.name,
-    date: event.date.toISOString(),
-    startTime: event.startTime,
-    endTime: event.endTime,
-    status: event.status,
-    venueId: {
-      _id: event.venueId._id.toString(),
-      name: event.venueId.name,
-    },
-    externalSource: event.externalSource,
-    ticketUrl: event.ticketUrl,
-    isPast: event.date < today,
-  }));
+  const serializedEvents = events.map((event) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const venueData = event.venueId as any;
+    return {
+      _id: event._id.toString(),
+      name: event.name,
+      date: event.date.toISOString(),
+      startTime: event.startTime,
+      endTime: event.endTime,
+      status: event.status,
+      venueId: {
+        _id: venueData._id.toString(),
+        name: venueData.name,
+      },
+      externalSource: event.externalSource,
+      ticketUrl: event.ticketUrl,
+      isPast: event.date < today,
+    };
+  });
 
   // Sort to put upcoming events first, then past events
   serializedEvents.sort((a, b) => {

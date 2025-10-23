@@ -268,7 +268,7 @@ async function seed() {
         startTime: '22:00',
         endTime: '04:00',
         description: 'All night house music celebration',
-        status: EventStatus.SCHEDULED,
+        status: EventStatus.CONFIRMED,
         ticketUrl: 'https://tickets.example.com/house-night',
       },
       {
@@ -278,7 +278,7 @@ async function seed() {
         startTime: '23:00',
         endTime: '05:00',
         description: 'Underground techno experience',
-        status: EventStatus.SCHEDULED,
+        status: EventStatus.CONFIRMED,
       },
       {
         name: 'Weekend Vibes',
@@ -296,7 +296,7 @@ async function seed() {
         startTime: '20:00',
         endTime: '04:00',
         description: 'Celebrating Afrohouse music and culture',
-        status: EventStatus.SCHEDULED,
+        status: EventStatus.CONFIRMED,
       },
     ]);
     console.log(`✅ Created ${events.length} events`);

@@ -10,7 +10,7 @@ import RunOfShow from '@/models/RunOfShow';
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const admin = await isAdmin();
@@ -18,9 +18,11 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
+
     await dbConnect();
 
-    const event = await Event.findById(params.id).populate('venueId').lean();
+    const event = await Event.findById(id).populate('venueId').lean();
 
     if (!event) {
       return NextResponse.json({ error: 'Event not found' }, { status: 404 });
@@ -42,13 +44,15 @@ export async function GET(
  */
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const admin = await isAdmin();
     if (!admin) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    const { id } = await params;
 
     await dbConnect();
 
@@ -65,7 +69,7 @@ export async function PUT(
 
     // Update event
     const event = await Event.findByIdAndUpdate(
-      params.id,
+      id,
       {
         name,
         venueId,
@@ -85,12 +89,14 @@ export async function PUT(
     }
 
     // Serialize response
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const venueData = event.venueId as any;
     const serialized = {
       _id: event._id.toString(),
       name: event.name,
       venueId: {
-        _id: event.venueId._id.toString(),
-        name: event.venueId.name,
+        _id: venueData._id.toString(),
+        name: venueData.name,
       },
       date: event.date.toISOString(),
       startTime: event.startTime,
@@ -116,7 +122,7 @@ export async function PUT(
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const admin = await isAdmin();
@@ -124,17 +130,19 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
+
     await dbConnect();
 
     // Delete event
-    const event = await Event.findByIdAndDelete(params.id);
+    const event = await Event.findByIdAndDelete(id);
 
     if (!event) {
       return NextResponse.json({ error: 'Event not found' }, { status: 404 });
     }
 
     // Delete associated run of show
-    await RunOfShow.findOneAndDelete({ eventId: params.id });
+    await RunOfShow.findOneAndDelete({ eventId: id });
 
     return NextResponse.json(
       { message: 'Event deleted successfully' },

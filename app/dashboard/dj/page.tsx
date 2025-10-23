@@ -3,7 +3,6 @@ import { getCurrentUser } from '@/lib/auth';
 import dbConnect from '@/lib/db';
 import RunOfShow from '@/models/RunOfShow';
 import Event from '@/models/Event';
-import Venue from '@/models/Venue';
 import { format } from 'date-fns';
 import LogoutButton from '@/components/auth/LogoutButton';
 import DecklyLogo from '@/components/DecklyLogo';
@@ -164,16 +163,19 @@ export default async function DJDashboard() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <p className="text-sm text-muted-foreground">Name</p>
-              <p className="font-medium text-foreground">{user.djId.name}</p>
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+              <p className="font-medium text-foreground">{(user.djId as any).name}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Email</p>
-              <p className="font-medium text-foreground">{user.djId.email}</p>
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+              <p className="font-medium text-foreground">{(user.djId as any).email}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Genres</p>
               <div className="flex flex-wrap gap-2 mt-1">
-                {user.djId.genres.map((genre: string) => (
+                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                {(user.djId as any).genres.map((genre: string) => (
                   <span
                     key={genre}
                     className="px-2 py-1 bg-primary/20 text-primary border border-primary/30 rounded-full text-xs font-medium"
@@ -186,7 +188,8 @@ export default async function DJDashboard() {
             <div>
               <p className="text-sm text-muted-foreground">Total Bookings</p>
               <p className="font-medium text-2xl text-primary">
-                {user.djId.bookingCount}
+                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                {(user.djId as any).bookingCount}
               </p>
             </div>
           </div>

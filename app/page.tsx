@@ -7,7 +7,7 @@ import { MagneticButton } from '@/components/MagneticButton';
 export default function Home() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [currentSection, setCurrentSection] = useState(0);
-  const scrollThrottleRef = useRef<number>();
+  const scrollThrottleRef = useRef<number | undefined>(undefined);
 
   const sections = [
     { id: 0, name: 'Home' },

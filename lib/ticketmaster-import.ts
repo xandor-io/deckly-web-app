@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 import Venue, { IVenue } from '../models/Venue';
 import Event, { EventStatus } from '../models/Event';
 import {
@@ -63,7 +62,8 @@ function calculateEndTime(startTime: string): string {
 function mapTicketmasterEvent(
   tmEvent: TicketmasterEvent,
   venue: IVenue
-): Partial<Event> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+): any {
   const localDate = tmEvent.dates?.start?.localDate;
   const dateTime = tmEvent.dates?.start?.dateTime;
   const localTime = tmEvent.dates?.start?.localTime;
@@ -98,7 +98,7 @@ function mapTicketmasterEvent(
   // Map Ticketmaster data to our Event model
   return {
     name: tmEvent.name,
-    venueId: venue._id as mongoose.Types.ObjectId,
+    venueId: venue._id,
     date: eventDate,
     startTime,
     endTime,
@@ -160,7 +160,8 @@ function mapTicketmasterEvent(
  * Matches on: venue, date, and approximate time (within 2 hours)
  */
 async function findMatchingManualEvent(
-  venueId: mongoose.Types.ObjectId,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  venueId: any,
   eventDate: Date,
   startTime: string
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -259,7 +260,7 @@ export async function importVenueEvents(
           // Check if there's a matching manual event
           const mappedData = mapTicketmasterEvent(tmEvent, venue);
           const manualEvent = await findMatchingManualEvent(
-            venue._id as mongoose.Types.ObjectId,
+            venue._id,
             mappedData.date!,
             mappedData.startTime!
           );

@@ -10,7 +10,7 @@ import Event from '@/models/Event';
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const admin = await isAdmin();
@@ -18,9 +18,11 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
+
     await dbConnect();
 
-    const runOfShow = await RunOfShow.findOne({ eventId: params.id })
+    const runOfShow = await RunOfShow.findOne({ eventId: id })
       .populate('timeSlots.djAssignments.djId')
       .lean();
 
@@ -44,7 +46,7 @@ export async function GET(
  */
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const admin = await isAdmin();
@@ -52,16 +54,18 @@ export async function POST(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
+
     await dbConnect();
 
     // Verify event exists
-    const event = await Event.findById(params.id);
+    const event = await Event.findById(id);
     if (!event) {
       return NextResponse.json({ error: 'Event not found' }, { status: 404 });
     }
 
     // Check if run of show already exists
-    const existing = await RunOfShow.findOne({ eventId: params.id });
+    const existing = await RunOfShow.findOne({ eventId: id });
     if (existing) {
       return NextResponse.json(
         { error: 'Run of show already exists for this event' },
@@ -73,7 +77,7 @@ export async function POST(
     const { timeSlots } = body;
 
     const runOfShow = await RunOfShow.create({
-      eventId: params.id,
+      eventId: id,
       timeSlots: timeSlots || [],
     });
 
@@ -127,7 +131,7 @@ export async function POST(
  */
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const admin = await isAdmin();
@@ -135,18 +139,20 @@ export async function PUT(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
+
     await dbConnect();
 
     const body = await request.json();
     const { timeSlots } = body;
 
     // Find or create run of show
-    let runOfShow = await RunOfShow.findOne({ eventId: params.id });
+    let runOfShow = await RunOfShow.findOne({ eventId: id });
 
     if (!runOfShow) {
       // Create if doesn't exist
       runOfShow = await RunOfShow.create({
-        eventId: params.id,
+        eventId: id,
         timeSlots: timeSlots || [],
       });
     } else {
@@ -205,7 +211,7 @@ export async function PUT(
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const admin = await isAdmin();
@@ -213,9 +219,11 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
+
     await dbConnect();
 
-    await RunOfShow.findOneAndDelete({ eventId: params.id });
+    await RunOfShow.findOneAndDelete({ eventId: id });
 
     return NextResponse.json({ message: 'Run of show deleted' }, { status: 200 });
   } catch (error) {

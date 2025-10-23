@@ -24,6 +24,8 @@ interface EventLean {
   status: string;
   createdAt: Date;
   updatedAt: Date;
+  ticketmasterData?: unknown;
+  externalIds?: unknown;
 }
 
 export default async function AdminPage() {

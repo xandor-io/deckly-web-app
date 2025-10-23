@@ -6,7 +6,7 @@ import EditEventForm from './EditEventForm';
 export default async function EditEventPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
   const admin = await isAdmin();
 
@@ -14,13 +14,15 @@ export default async function EditEventPage({
     redirect('/dashboard/dj');
   }
 
+  const { id } = await params;
+
   await dbConnect();
 
   const Event = (await import('@/models/Event')).default;
   const Venue = (await import('@/models/Venue')).default;
 
   // Fetch event
-  const event = await Event.findById(params.id).populate('venueId').lean();
+  const event = await Event.findById(id).populate('venueId').lean();
 
   if (!event) {
     redirect('/admin/events');
