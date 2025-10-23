@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { MagneticButton } from '@/components/MagneticButton';
 
 interface Venue {
   _id: string;

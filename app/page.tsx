@@ -7,8 +7,6 @@ import { MagneticButton } from '@/components/MagneticButton';
 export default function Home() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [currentSection, setCurrentSection] = useState(0);
-  const touchStartY = useRef(0);
-  const touchStartX = useRef(0);
   const scrollThrottleRef = useRef<number>();
 
   const sections = [
@@ -429,7 +427,7 @@ export default function Home() {
                 Built for Everyone in the Event Industry
               </h2>
               <p className='text-foreground/70 text-lg max-w-2xl mx-auto'>
-                Whether you're a DJ, venue owner, or event organizer, Deckly has
+                Whether you&apos;re a DJ, venue owner, or event organizer, Deckly has
                 you covered
               </p>
             </div>
@@ -690,7 +688,7 @@ export default function Home() {
             </div>
             <div className='border-t border-foreground/10 pt-12'>
               <p className='text-foreground/50 text-sm font-mono mb-4'>
-                Have questions? We're here to help
+                Have questions? We&apos;re here to help
               </p>
               <a
                 href='mailto:hello@deckly.app'

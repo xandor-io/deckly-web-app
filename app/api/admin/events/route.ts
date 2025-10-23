@@ -8,7 +8,7 @@ import Venue from '@/models/Venue';
  * GET /api/admin/events
  * Fetch all events
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const admin = await isAdmin();
     if (!admin) {

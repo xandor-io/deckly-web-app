@@ -20,7 +20,6 @@ export default async function ManageRunOfShowPage({
   const Event = (await import('@/models/Event')).default;
   const RunOfShow = (await import('@/models/RunOfShow')).default;
   const DJ = (await import('@/models/DJ')).default;
-  const Venue = (await import('@/models/Venue')).default;
 
   // Fetch event with venue
   const event = await Event.findById(params.id).populate('venueId').lean();
@@ -66,7 +65,7 @@ export default async function ManageRunOfShowPage({
     ? {
         _id: runOfShow._id.toString(),
         eventId: runOfShow.eventId.toString(),
-        timeSlots: runOfShow.timeSlots.map((slot: any) => ({
+        timeSlots: runOfShow.timeSlots.map((slot) => ({
           _id: slot._id?.toString(),
           slotName: slot.slotName,
           slotType: slot.slotType,
@@ -74,7 +73,7 @@ export default async function ManageRunOfShowPage({
           endTime: slot.endTime,
           maxDJs: slot.maxDJs,
           notes: slot.notes,
-          djAssignments: slot.djAssignments.map((assignment: any) => ({
+          djAssignments: slot.djAssignments.map((assignment) => ({
             djId: {
               _id: assignment.djId._id.toString(),
               name: assignment.djId.name,

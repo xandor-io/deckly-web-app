@@ -85,6 +85,7 @@ export async function POST(
     const serialized = {
       _id: populated!._id.toString(),
       eventId: populated!.eventId.toString(),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       timeSlots: populated!.timeSlots.map((slot: any) => ({
         _id: slot._id?.toString(),
         slotName: slot.slotName,
@@ -93,6 +94,7 @@ export async function POST(
         endTime: slot.endTime,
         maxDJs: slot.maxDJs,
         notes: slot.notes,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         djAssignments: slot.djAssignments.map((assignment: any) => ({
           djId: {
             _id: assignment.djId._id.toString(),
@@ -161,6 +163,7 @@ export async function PUT(
     const serialized = {
       _id: populated!._id.toString(),
       eventId: populated!.eventId.toString(),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       timeSlots: populated!.timeSlots.map((slot: any) => ({
         _id: slot._id?.toString(),
         slotName: slot.slotName,
@@ -169,6 +172,7 @@ export async function PUT(
         endTime: slot.endTime,
         maxDJs: slot.maxDJs,
         notes: slot.notes,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         djAssignments: slot.djAssignments.map((assignment: any) => ({
           djId: {
             _id: assignment.djId._id.toString(),

@@ -163,6 +163,7 @@ async function findMatchingManualEvent(
   venueId: mongoose.Types.ObjectId,
   eventDate: Date,
   startTime: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any | null> {
   const [hours, minutes] = startTime.split(':').map(Number);
   const startMinutes = hours * 60 + minutes;

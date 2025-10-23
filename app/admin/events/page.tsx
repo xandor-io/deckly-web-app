@@ -22,7 +22,6 @@ export default async function EventsPage() {
   await dbConnect();
 
   const Event = (await import('@/models/Event')).default;
-  const Venue = (await import('@/models/Venue')).default;
 
   const events = await Event.find({})
     .populate('venueId')
@@ -32,7 +31,7 @@ export default async function EventsPage() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const serializedEvents = events.map((event: any) => ({
+  const serializedEvents = events.map((event) => ({
     _id: event._id.toString(),
     name: event.name,
     date: event.date.toISOString(),

@@ -75,7 +75,6 @@ export default function RunOfShowManager({
     initialRunOfShow
   );
   const [isAddingSlot, setIsAddingSlot] = useState(false);
-  const [editingSlotId, setEditingSlotId] = useState<string | null>(null);
   const [selectedDJs, setSelectedDJs] = useState<{ [slotId: string]: string }>(
     {}
   );
@@ -434,7 +433,7 @@ export default function RunOfShowManager({
         <div className="space-y-4">
           {runOfShow?.timeSlots.length === 0 ? (
             <p className="py-8 text-center text-foreground/60">
-              No time slots yet. Click "Add Time Slot" to get started.
+              No time slots yet. Click &quot;Add Time Slot&quot; to get started.
             </p>
           ) : (
             runOfShow?.timeSlots

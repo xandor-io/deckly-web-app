@@ -37,12 +37,12 @@ export default async function AdminPage() {
 
   // Import models after dbConnect to ensure proper registration
   const Event = (await import('@/models/Event')).default;
-  const Venue = (await import('@/models/Venue')).default;
 
   const events = await Event.find({}).populate('venueId').sort({ date: 1 }).lean<EventLean[]>();
 
   const serializedEvents = events.map((event) => {
     // Deep clone and serialize the event
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const serialized: any = {
       ...event,
       _id: event._id.toString(),
