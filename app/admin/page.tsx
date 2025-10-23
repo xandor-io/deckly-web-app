@@ -39,6 +39,8 @@ export default async function AdminPage() {
 
   // Import models after dbConnect to ensure proper registration
   const Event = (await import('@/models/Event')).default;
+  // Import Venue to ensure it's registered for population
+  await import('@/models/Venue');
 
   const events = await Event.find({}).populate('venueId').sort({ date: 1 }).lean<EventLean[]>();
 

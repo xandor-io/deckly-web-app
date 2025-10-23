@@ -104,6 +104,9 @@ export default async function DJDashboard() {
 
   await dbConnect();
 
+  // Import Venue to ensure it's registered for population
+  await import('@/models/Venue');
+
   // Get all bookings for this DJ
   const runOfShows = await RunOfShow.find({
     'timeSlots.djAssignments.djId': user.djId,

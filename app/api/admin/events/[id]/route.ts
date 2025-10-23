@@ -3,6 +3,7 @@ import { isAdmin } from '@/lib/auth';
 import dbConnect from '@/lib/db';
 import Event from '@/models/Event';
 import RunOfShow from '@/models/RunOfShow';
+import '@/models/Venue'; // Import to ensure Venue model is registered for population
 
 /**
  * GET /api/admin/events/[id]

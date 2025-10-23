@@ -22,6 +22,8 @@ export default async function ManageRunOfShowPage({
   const Event = (await import('@/models/Event')).default;
   const RunOfShow = (await import('@/models/RunOfShow')).default;
   const DJ = (await import('@/models/DJ')).default;
+  // Import Venue to ensure it's registered for population
+  await import('@/models/Venue');
 
   // Fetch event with venue
   const event = await Event.findById(id).populate('venueId').lean();
