@@ -184,7 +184,7 @@ export default function Home() {
               <MagneticButton
                 size='lg'
                 variant='secondary'
-                onClick={() => scrollToSection(1)}
+                onClick={() => scrollToSection(2)}
               >
                 View Solutions
               </MagneticButton>
@@ -427,8 +427,8 @@ export default function Home() {
                 Built for Everyone in the Event Industry
               </h2>
               <p className='text-foreground/70 text-lg max-w-2xl mx-auto'>
-                Whether you&apos;re a DJ, venue owner, or event organizer, Deckly has
-                you covered
+                Whether you&apos;re a DJ, venue owner, or event organizer,
+                Deckly has you covered
               </p>
             </div>
 
